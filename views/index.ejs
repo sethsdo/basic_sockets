@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>main</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // this triggers the connection event in our server!
+            var socket = io.connect();
+            // we'll write all the socket stuff after the above line!
+            $('.btn-form').click(function () {
+                var inputs = {
+                   "name": $('#name').val(),
+                   "location": $('#location').val(),
+                   "language": $('#language').val(),
+                   "comment": $('#comment').val(),
+                }
+                socket.emit("button_clicked", { reason: inputs });
+            });
+            socket.on('server_response', function (data) {
+                console.log('The server says: ' + data.reason);
+                $('.res').append("<p>" + JSON.stringify(data.reason) + data.number + "</p>")
+            });
+        })
+    </script>
+
+<body>
+    <div class="container">
+        <button>Hello</button>
+        <div class="res"></div>
+        <h3>Welcome to Dojo Survey</h3>
+        
+            <div class="form-group">
+                Name:
+                <input type='text' class="form-control" id="name" name='name'>
+            </div>
+            <div class="form-group">
+                Dojo Location:
+                <select name="location" id="location">
+                    <option value="SL">Silicon Valley</option>
+                    <option value="Sea">Seattle</option>
+                    <option value="LA">Los Angeles</option>
+                    <option value="dc">D.C</option>
+                </select>
+            </div>
+            <div class="form-group">
+                Favorite Location:
+                <select name="language" id="language">
+                    <option value="Python">Python</option>
+                    <option value="Java">Java</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="Go">Go</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="comment">Comment(optional):</label>
+                <textarea class="form-control" name="comment" rows="5" id="comment"></textarea>
+            </div>
+            <button class="btn btn-default btn-form">Submit</button>
+        
+    </div>
+</body>
+
+</html>
